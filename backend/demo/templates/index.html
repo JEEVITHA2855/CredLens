@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misinformation Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+        .credible {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .misinformation {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .metric {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Misinformation Detector</h1>
+        <textarea id="text" placeholder="Enter text to analyze..."></textarea>
+        <button onclick="analyzeText()">Analyze</button>
+        <div id="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        async function analyzeText() {
+            const text = document.getElementById('text').value;
+            if (!text) return;
+
+            try {
+                const response = await fetch('http://localhost:5000/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                const result = await response.json();
+                displayResult(result);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error analyzing text. Please try again.');
+            }
+        }
+
+        function displayResult(result) {
+            const resultDiv = document.getElementById('result');
+            const isCredible = result.classification === 'Likely Credible';
+            
+            resultDiv.className = isCredible ? 'credible' : 'misinformation';
+            
+            resultDiv.innerHTML = `
+                <h3>${result.classification}</h3>
+                <div class="metrics">
+                    <div class="metric">
+                        <strong>Credibility Score:</strong><br>
+                        ${result.credibility_score}%
+                    </div>
+                    <div class="metric">
+                        <strong>Confidence Level:</strong><br>
+                        ${result.confidence_level}
+                    </div>
+                    <div class="metric">
+                        <strong>Credible Probability:</strong><br>
+                        ${result.probabilities.credible}%
+                    </div>
+                    <div class="metric">
+                        <strong>Misinformation Probability:</strong><br>
+                        ${result.probabilities.misinformation}%
+                    </div>
+                </div>
+            `;
+            
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+[
+  {
+    "scenario": "True Claim",
+    "input": "Vaccines are effective at preventing serious illness from COVID-19",
+    "expected_verdict": "LIKELY_TRUE",
+    "description": "A claim that should be verified as true with strong evidence"
+  },
+  {
+    "scenario": "False Claim",
+    "input": "SHOCKING: Scientists REVEAL that 5G towers spread deadly coronavirus through radio waves!",
+    "expected_verdict": "LIKELY_FALSE",
+    "description": "A false claim with sensational language that should be flagged"
+  },
+  {
+    "scenario": "Mixed Evidence",
+    "input": "Organic foods are much healthier and more nutritious than conventional foods",
+    "expected_verdict": "MIXED",
+    "description": "A claim with mixed evidence that requires nuanced analysis"
+  },
+  {
+    "scenario": "Unverified Claim",
+    "input": "A new study shows that eating purple carrots improves memory by 50%",
+    "expected_verdict": "UNVERIFIED",
+    "description": "A novel claim that likely has no evidence in the database"
+  }
+]

@@ -1,0 +1,10 @@
+scikit-learn
+pandas
+numpy
+google-cloud-aiplatform
+google-cloud-storage
+joblib
+sentence-transformers
+torch
+requests
+beautifulsoup4

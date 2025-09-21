@@ -1,0 +1,116 @@
+[
+  {
+    "claim": "Water boils at 100 degrees Celsius at sea level atmospheric pressure",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "The Earth completes one rotation on its axis approximately every 24 hours",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "DNA contains genetic instructions for the development of living things",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "mRNA vaccines have been shown to be effective against COVID-19 in multiple clinical trials",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Global temperatures have risen by approximately 1.1\u00b0C since pre-industrial times",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Regular physical exercise is associated with improved cardiovascular health",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "5G networks are responsible for spreading viruses",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "The Earth is flat and NASA is hiding the truth",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Drinking bleach can cure diseases",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Ancient civilizations were built by aliens",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Coffee is good for your health",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Remote work increases productivity",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Artificial intelligence will replace most jobs by 2030",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Renewable energy is now cheaper than fossil fuels in many countries",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Electric vehicles produce zero emissions",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Social media use causes depression in teenagers",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "The moon landing was faked in a Hollywood studio",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "There's a secret world government controlling everything",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  },
+  {
+    "claim": "Major historical events were orchestrated by secret societies",
+    "verdict": "FALSE",
+    "credibility_score": 5,
+    "reasoning": "Strong evidence from 1 high-credibility sources disproves this claim. Sources include Fact-Checking Network. "
+  }
+]

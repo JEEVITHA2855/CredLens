@@ -1,0 +1,21 @@
+{
+  "total_fact_checks": 26,
+  "verdict_breakdown": {
+    "TRUE": 0,
+    "FALSE": 20,
+    "MIXED": 6
+  },
+  "categories": [
+    "Vaccines & Health",
+    "Climate Change",
+    "Technology & 5G",
+    "Elections & Politics",
+    "Economics",
+    "History",
+    "Food & Agriculture",
+    "Environment & Energy",
+    "Science & Space",
+    "Social Media"
+  ],
+  "demo_scenarios": 4
+}

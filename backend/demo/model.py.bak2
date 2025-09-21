@@ -1,0 +1,324 @@
+from transformers import pipeline
+from scientific_validator import ScientificValidator
+from fact_checker import FactCheckAPI
+import logging
+
+logger = logging.getLogger(__name__)
+
+class AnalysisModel:
+    def __init__(self):
+        # Initialize components
+        self.sentiment_analyzer = pipeline("sentiment-analysis")
+        self.scientific_validator = ScientificValidator()
+        self.fact_checker = FactCheckAPI()
+
+    def verify_claim(self, text):
+        """Verify claim using multiple sources."""
+        try:
+            # Get comprehensive verification from all sources
+            verification_results = self.fact_checker.aggregate_verification(text)
+            
+            # Check if it's a scientific claim
+            scientific_result = self.scientific_validator.validate_scientific_claim(text)
+            
+            if scientific_result['is_scientific']:
+                verification_results['scientific_validation'] = scientific_result
+                verification_results['aggregate_confidence'] = max(
+                    verification_results['aggregate_confidence'],
+                    scientific_result['confidence'] / 100
+                )
+                
+            return verification_results
+        except Exception as e:
+            logger.error(f"Error in claim verification: {str(e)}")
+            return {
+                'error': str(e),
+                'aggregate_confidence': 0.0,
+                'verification_count': 0
+            }
+
+    def analyze_text(self, text):
+        """Analyze text using multiple verification sources and sentiment analysis."""
+        try:
+            # Basic sanitization
+            if not text or not isinstance(text, str):
+                return {
+                    "error": "Invalid input text",
+                    "credibility_score": 0,
+                    "sentiment": "neutral",
+                    "reasoning": ["Invalid or empty input provided"],
+                    "sources": []
+                }
+
+            # Get comprehensive verification
+            verification_results = self.verify_claim(text)
+            
+            # Get sentiment analysis
+            sentiment_result = self.sentiment_analyzer(text)[0]
+            
+            # Initialize response structure
+            sources = []
+            reasoning = []
+            
+            # Process verification results
+            if verification_results.get('google_facts', {}).get('found', False):
+                sources.extend(['Google Fact Check API'])
+                reasoning.append("Verified against fact-checking databases")
+                
+            if verification_results.get('news_verification', {}).get('found', False):
+                sources.extend(['News articles', 'Media reports'])
+                reasoning.append("Found corroborating news articles")
+                
+            if verification_results.get('scientific_validation', {}).get('is_scientific', False):
+                sources.extend(verification_results['scientific_validation'].get('sources', []))
+                reasoning.append(
+                    f"Verified as scientific claim in field: {verification_results['scientific_validation'].get('fact_type', 'general')}"
+                )
+            
+            # Calculate final credibility score
+            base_confidence = verification_results.get('aggregate_confidence', 0.5)
+            
+            # Adjust for sentiment
+            sentiment_factor = 0.1 if sentiment_result['label'] == 'POSITIVE' else -0.1
+            
+            credibility_score = base_confidence * 100 * (1 + sentiment_factor)
+            credibility_score = max(0, min(100, credibility_score))
+            
+            # Add final reasoning points
+            if not sources:
+                sources = ["AI analysis", "Language pattern detection"]
+                reasoning.extend([
+                    "No external verification found",
+                    f"Sentiment analysis suggests {sentiment_result['label'].lower()} tone"
+                ])
+            
+            return {
+                "credibility_score": credibility_score,
+                "sentiment": sentiment_result['label'].lower(),
+                "verification_status": "verified" if verification_results.get('verification_count', 0) > 0 else "unverified",
+                "reasoning": reasoning,
+                "sources": sources,
+                "details": {
+                    "fact_check_results": verification_results.get('google_facts', {}),
+                    "news_verification": verification_results.get('news_verification', {}),
+                    "scientific_validation": verification_results.get('scientific_validation', {})
+                }
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in text analysis: {str(e)}")
+            return {
+                "error": str(e),
+                "credibility_score": 0,
+                "sentiment": "neutral",
+                "reasoning": ["Error during analysis"],
+                "sources": []
+            }
+            
+            # Ensure verification_result has all required fields with defaults
+            verification_result = {
+                "is_factual": verification_result.get("is_factual", True if is_scientific else None),
+                "confidence": verification_result.get("confidence", 90 if is_scientific else 0),
+                "reasoning": verification_result.get("reasoning", 
+                    "This appears to be a scientific fact." if is_scientific 
+                    else "No verification available"),
+                "supporting_facts": verification_result.get("supporting_facts", []),
+                "contradicting_evidence": verification_result.get("contradicting_evidence", [])
+            }
+            
+            # Calculate final credibility score with scientific bonus
+            if verification_result["is_factual"] is not None:
+                credibility_score = (
+                    0.6 * initial_credibility_score +  # ML model weight
+                    0.4 * verification_result["confidence"] +  # Fact checking weight
+                    (15 if is_scientific else 0)  # Scientific content bonus
+                )
+            else:
+                credibility_score = initial_credibility_score
+            
+            # Ensure credibility score is within bounds
+            credibility_score = min(100, max(0, credibility_score))
+            
+            # Calculate confidence from both ML and verification
+            confidence_score = (
+                0.7 * max(probs) * 100 +  # ML confidence
+                0.3 * verification_result["confidence"] +  # Verification confidence
+                (20 if is_scientific else 0)  # Scientific content bonus
+            )
+            
+            # Ensure confidence score is within bounds
+            confidence_score = min(100, max(0, confidence_score))
+            
+            # Determine confidence level
+            confidence_level = (
+                "High" if confidence_score >= 80
+                else "Medium" if confidence_score >= 60
+                else "Low"
+            )
+            
+            # Determine classification with improved logic
+            if is_scientific:
+                classification = "Likely Credible"
+            else:
+                classification = (
+                    "Likely Credible" if credibility_score > 50
+                    else "Potential Misinformation"
+                )
+            
+            # Prepare and return the complete analysis result
+            return {
+                "text": text,
+                "prediction": prediction,
+                "credibility_score": round(credibility_score, 2),
+                "confidence_score": round(confidence_score, 2),
+                "confidence_level": confidence_level,
+                "classification": classification,
+                "verification_result": verification_result,
+                "probabilities": {
+                    "credible": round(probs[0] * 100, 2),
+                    "misinformation": round(probs[1] * 100, 2)
+                }
+            }
+        except Exception as e:
+            # Return a default response in case of error
+            return {
+                "text": text,
+                "prediction": False,
+                "credibility_score": 0,
+                "confidence_score": 0,
+                "confidence_level": "Low",
+                "classification": "Unknown",
+                "verification_result": {
+                    "is_factual": None,
+                    "confidence": 0,
+                    "reasoning": f"Error during analysis: {str(e)}",
+                    "supporting_facts": [],
+                    "contradicting_evidence": []
+                },
+                "probabilities": {
+                    "credible": 0,
+                    "misinformation": 0
+                }
+            }
+        
+    def save_model(self, model_dir):
+        """Save the model and vectorizer."""
+        os.makedirs(model_dir, exist_ok=True)
+        joblib.dump(self.classifier, os.path.join(model_dir, 'model.joblib'))
+        joblib.dump(self.vectorizer, os.path.join(model_dir, 'vectorizer.joblib'))
+        
+    def query_fact_check_apis(self, claim):
+        """Query multiple fact-checking APIs and databases."""
+        # List of fact-checking APIs to query
+        fact_check_endpoints = {
+            'google': {
+                'url': f'https://factchecktools.googleapis.com/v1alpha1/claims:search?query={quote_plus(claim)}',
+                'key': os.getenv('GOOGLE_FACT_CHECK_API_KEY')
+            },
+            'science_sources': {
+                'urls': [
+                    'https://api.nasa.gov/planetary/apod',  # NASA API
+                    'https://api.who.int',  # WHO API
+                    'https://api.ncbi.nlm.nih.gov'  # PubMed API
+                ]
+            }
+        }
+        
+        results = []
+        
+        def query_api(api_info):
+            try:
+                if 'key' in api_info:
+                    headers = {'Authorization': f'Bearer {api_info["key"]}'}
+                    response = requests.get(api_info['url'], headers=headers, timeout=5)
+                else:
+                    response = requests.get(api_info['url'], timeout=5)
+                    
+                if response.status_code == 200:
+                    return response.json()
+            except Exception as e:
+                print(f"API query error: {str(e)}")
+                return None
+                
+        with ThreadPoolExecutor(max_workers=3) as executor:
+            api_results = executor.map(query_api, fact_check_endpoints.values())
+            results.extend([r for r in api_results if r])
+            
+        return results
+        
+    def search_scientific_databases(self, claim):
+        """Search scientific databases and journals for verification."""
+        scientific_apis = {
+            'arxiv': 'http://export.arxiv.org/api/query',
+            'science_gov': 'https://www.science.gov/sciencegovapi/v1/search',
+            'pubmed': 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi'
+        }
+        
+        results = []
+        for source, api_url in scientific_apis.items():
+            try:
+                params = {'q': claim, 'format': 'json'}
+                response = requests.get(api_url, params=params, timeout=5)
+                if response.status_code == 200:
+                    results.append({
+                        'source': source,
+                        'data': response.json()
+                    })
+            except Exception as e:
+                print(f"Scientific database query error ({source}): {str(e)}")
+                
+        return results
+        
+    def analyze_text_with_verification(self, text):
+        """Enhanced analysis with automatic verification from multiple sources."""
+        # Get base analysis from ML model
+        base_results = self.analyze_text(text)
+        
+        # Query fact-checking APIs
+        fact_check_results = self.query_fact_check_apis(text)
+        
+        # Search scientific databases
+        scientific_results = self.search_scientific_databases(text)
+        
+        # Combine and analyze results
+        verified_info = {
+            'fact_checks': fact_check_results,
+            'scientific_sources': scientific_results
+        }
+        
+        # Adjust confidence based on external verification
+        if fact_check_results or scientific_results:
+            # If we have external verification, adjust scores
+            external_verification_weight = 0.3
+            model_weight = 0.7
+            
+            # Calculate verification score from external sources
+            verification_score = 0
+            total_sources = len(fact_check_results) + len(scientific_results)
+            if total_sources > 0:
+                verification_score = sum([
+                    1 for result in fact_check_results if result.get('rating', '').lower() in ['true', 'fact']
+                ] + [
+                    1 for result in scientific_results if result.get('matches', 0) > 0
+                ]) / total_sources * 100
+                
+            # Combine scores
+            adjusted_score = (
+                base_results['credibility_score'] * model_weight +
+                verification_score * external_verification_weight
+            )
+            
+            base_results['credibility_score'] = round(adjusted_score, 2)
+            base_results['verification_sources'] = verified_info
+            
+        return base_results
+        joblib.dump(self.classifier, os.path.join(model_dir, 'model.joblib'))
+        joblib.dump(self.vectorizer, os.path.join(model_dir, 'vectorizer.joblib'))
+        
+    @classmethod
+    def load_model(cls, model_dir):
+        """Load a saved model."""
+        model = cls()
+        model.classifier = joblib.load(os.path.join(model_dir, 'model.joblib'))
+        model.vectorizer = joblib.load(os.path.join(model_dir, 'vectorizer.joblib'))
+        return model
