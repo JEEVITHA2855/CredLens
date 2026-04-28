@@ -6,7 +6,7 @@ CredLens is an end-to-end AI system that detects, analyzes, and explains misinfo
 
 ---
 
-## 🧠 Why CredLens?
+##  Why CredLens?
 
 Misinformation spreads faster than verification. CredLens addresses this by:
 
@@ -83,7 +83,7 @@ Explainable Output + Micro-lessons
 
 ---
 
-## 🧪 Example
+##  Example
 
 ### Input:
 
@@ -181,7 +181,7 @@ Frontend runs at:
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Backend
@@ -203,7 +203,7 @@ npm test
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 * Real-time web scraping for live verification
 * Multilingual support
@@ -219,18 +219,9 @@ npm test
 
 ---
 
-## 🤝 Contributing
 
-Contributions are welcome!
-Feel free to open issues or submit pull requests.
 
----
 
-## 📄 License
-
-MIT License
-
----
 
 ## 💡 Final Note
 
